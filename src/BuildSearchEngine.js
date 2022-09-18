@@ -1,7 +1,12 @@
 const getRidOfSymbols = (text) => {
   const regExp = new RegExp(`(!)|(\\?)|(,)|(\\.)|(\\()|(\\))|(-)|(')|(")|(\\^)|(_)`, 'g');
   return text.replaceAll(regExp, '');
-}
+};
+
+const getOccurrencesNumber = (string, substring) => {
+  const regExp = new RegExp(`${substring}`, 'g');
+  return (string.match(regExp) || []).length;
+};
 
 const buildSearchEngine = (docs) => {
   return {
@@ -9,8 +14,9 @@ const buildSearchEngine = (docs) => {
     search(word) {
       const fixedWord = getRidOfSymbols(word);
       return this.docs
-        .filter((doc) => doc.text.split(' ')
-        .includes(fixedWord))
+        .filter((doc) => doc.text.split(' ').includes(fixedWord))
+        .map((doc) => ({...doc, count: getOccurrencesNumber(doc.text, fixedWord)}))
+        .sort((a, b) => b.count - a.count)
         .map(doc => doc.id);
     },
   };
