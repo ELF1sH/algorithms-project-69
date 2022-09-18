@@ -8,7 +8,7 @@ test('Stage1:test1', () => {
   const docs = [doc1, doc2, doc3];
   const searchEngine = buildSearchEngine(docs);
 
-  expect(searchEngine.search('shoot')).toStrictEqual(['doc2', 'doc1']);
+  expect(searchEngine.search('shoot')).toStrictEqual(['doc1', 'doc2']);
 });
 
 test('Stage2:test1', () => {
@@ -26,7 +26,7 @@ test('Stage3:test1', () => {
   const docs = [doc1, doc2, doc3];
   const searchEngine = buildSearchEngine(docs);
 
-  expect(searchEngine.search('shoot')).toStrictEqual(['doc2', 'doc1']);
+  expect(searchEngine.search('shoot')).toStrictEqual(['doc1', 'doc2']);
 });
 
 test('Stage4:test1', () => {
@@ -38,3 +38,13 @@ test('Stage4:test1', () => {
 
   expect(searchEngine.search('shoot at me')).toStrictEqual(['doc2', 'doc1']);
 });
+
+test('Stage5:test1', () => {
+  const doc1 = { id: 'doc1', text: 'some text' };
+  const doc2 = { id: 'doc2', text: 'some text too a' };
+  const doc3 = { id: 'doc3', text: 'a a a a a' }
+  const docs = [doc1, doc2, doc3];
+  const searchEngine = buildSearchEngine(docs);
+
+  expect(searchEngine.search('some a text')).toStrictEqual(['doc2', 'doc1', 'doc3']);
+})
