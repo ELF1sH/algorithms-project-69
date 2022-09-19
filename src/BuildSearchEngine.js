@@ -20,8 +20,8 @@ const getInvertedIndex = (docs) => {
 
   return uniqueWordsArray.reduce((acc, word) => ({
     ...acc,
-    [word]: docsTextArrays.reduce((acc, doc) => (
-      doc.text.includes(word) ? [...acc, doc.id] : acc
+    [word]: docsTextArrays.reduce((acc1, doc) => (
+      doc.text.includes(word) ? [...acc1, doc.id] : acc1
     ), []),
   }), {});
 };
@@ -34,7 +34,7 @@ const calculateTF = (docText, targetWordRegExp) => {
 
 const calculateIDF = (docsNumber, invertedIndex, targetWord) => {
   let currentIDF = docsNumber / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0);
-  if (!isFinite(currentIDF)) {
+  if (!Number.isFinite(currentIDF)) {
     currentIDF = 0;
   }
   return currentIDF;
@@ -75,28 +75,26 @@ const buildSearchEngine = (docs) => {
         const regExp = new RegExp(`(?<![a-zA-Z])${targetWord}(?![a-zA-Z])`, 'g');
         return {
           ...acc,
-          [targetWord]: normalizedDocs.reduce((acc, doc) => (
-            [...acc, { [doc.id]: calculateTF(doc.text, regExp) }]
+          [targetWord]: normalizedDocs.reduce((acc1, doc) => (
+            [...acc1, { [doc.id]: calculateTF(doc.text, regExp) }]
           ), []),
-        }
+        };
       }, {});
 
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
-        let currentIDF = calculateIDF(docs.length, invertedIndex, targetWord);
+        const currentIDF = calculateIDF(docs.length, invertedIndex, targetWord);
         return {
           ...acc,
           [targetWord]: Math.log(1 + currentIDF),
-        }
+        };
       }, {});
 
-      const TFIDF = normalizedTargetArray.reduce((acc, targetWord) => {
-        return {
-          ...acc,
-          [targetWord]: normalizedDocs.reduce((acc, doc) => (
-            [...acc, { [doc.id]: getTF(TFs, targetWord, doc.id) * IDF[targetWord] }]
-          ), []),
-        }
-      }, {});
+      const TFIDF = normalizedTargetArray.reduce((acc, targetWord) => ({
+        ...acc,
+        [targetWord]: normalizedDocs.reduce((acc1, doc) => (
+          [...acc1, { [doc.id]: getTF(TFs, targetWord, doc.id) * IDF[targetWord] }]
+        ), []),
+      }), {});
 
       const res = normalizedDocs.reduce((acc, doc) => (
         [...acc, [doc.id, findSumTFIDFbyDocId(TFIDF, doc.id)]]
@@ -104,8 +102,8 @@ const buildSearchEngine = (docs) => {
 
       return res
         .filter((item) => item[1] > 0)  // sum bigger than 0
-        .sort((a, b) => b[1] - a[1])    // sort by desc
-        .map((item) => item[0]);        // get rid of sums leaving only IDs
+        .sort((a, b) => b[1] - a[1])  // sort by desc
+        .map((item) => item[0]);  // get rid of sums leaving only IDs
     },
   };
 };
