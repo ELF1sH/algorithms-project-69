@@ -2,7 +2,7 @@ const WORD_REGEXP = /[a-zA-Z]+/g;
 const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z ]+/g;
 
 const getRidOfSymbols = (text) => {
-  return text.replace(EXTRA_SYMBOLS_REGEXP, ' ');
+  return text.replace(EXTRA_SYMBOLS_REGEXP, '');
 };
 
 const getUnique = (array) => Array.from(new Set(array));
@@ -24,7 +24,7 @@ const getInvertedIndex = (docs) => {
 
 const buildSearchEngine = (docs) => {
   const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text.toLowerCase()) }));
-  const invertedIndex = getInvertedIndex(docs);
+  const invertedIndex = getInvertedIndex(normalizedDocs);
   console.log(invertedIndex);
   return {
     search(target) {
