@@ -43,7 +43,7 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10(1 + (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10((doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
         }
       }, {});
       console.log(TFs);
@@ -78,6 +78,7 @@ const buildSearchEngine = (docs) => {
       }, []);
       console.log(res);
       const res1 = res
+        // .filter((item) => item[1] > 0)
         .sort((a, b) => b[1] - a[1])
         .map((item) => item[0])
       console.log(res1);
