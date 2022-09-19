@@ -2,7 +2,7 @@ const WORD_REGEXP = /[a-zA-Z]+/g;
 const EXTRA_SYMBOLS_REGEXP = /(!)|(\?)|(,)|(\.)|(\()|(\))|(-)|(')|(")|(\^)|(_)/g;
 
 const getRidOfSymbols = (text) => {
-  return text.replaceAll(EXTRA_SYMBOLS_REGEXP, '');
+  return text.replace(EXTRA_SYMBOLS_REGEXP, '');
 };
 
 const getOccurrencesNumber = (string, substring) => (
