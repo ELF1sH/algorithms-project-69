@@ -30,6 +30,7 @@ const buildSearchEngine = (docs) => {
   return {
     search(target) {
       const normalizedTarget = getRidOfSymbols(target);
+      if (target === null) return [];
       const normalizedTargetArray = normalizedTarget.match(WORD_REGEXP);
 
       const TFs = normalizedTargetArray.reduce((acc, targetWord) => {
