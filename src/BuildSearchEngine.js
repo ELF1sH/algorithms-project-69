@@ -68,7 +68,7 @@ const buildSearchEngine = (docs) => {
       }, []);
       console.log(res);
       const res1 = res
-        .filter((item) => item[1] > 0)
+        // .filter((item) => item[1] > 0)
         .sort((a, b) => b[1] - a[1])
         .map((item) => item[0])
       console.log(res1);
