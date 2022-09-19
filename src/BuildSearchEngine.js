@@ -1,23 +1,9 @@
 const WORD_REGEXP = /[a-zA-Z]+/g;
-const EXTRA_SYMBOLS_REGEXP = /(!)|(\?)|(,)|(\.)|(\()|(\))|(-)|(')|(")|(\^)|(_)/g;
+const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z ]+/g;
 
 const getRidOfSymbols = (text) => {
-  return text.replace(EXTRA_SYMBOLS_REGEXP, '');
+  return text.replace(EXTRA_SYMBOLS_REGEXP, ' ');
 };
-
-const getOccurrencesNumber = (string, substring) => (
-  string.split(' ').reduce((acc, word) => word === substring ? acc + 1 : acc, 0));
-
-const getOccurrencesSum = (string, substringsArray) => {
-  const res = substringsArray.reduce((acc, substring) => {
-    return acc + getOccurrencesNumber(string, substring);
-  }, 0);
-
-  return res;
-};
-
-const getOccurrencesNumberInArray = (array, element) => (
-  array.reduce((acc, arrElem) => arrElem === element ? acc + 1 : acc, 0));
 
 const getUnique = (array) => Array.from(new Set(array));
 
@@ -37,29 +23,12 @@ const getInvertedIndex = (docs) => {
 }
 
 const buildSearchEngine = (docs) => {
-  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text) }));
+  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text.toLowerCase()) }));
   const invertedIndex = getInvertedIndex(docs);
   console.log(invertedIndex);
   return {
-    // search(target) {
-    //   const targetArray = getUnique(getRidOfSymbols(target).match(WORD_REGEXP));
-    //   console.log(targetArray);
-    //
-    //   const docOccurrencesNumbers = normalizedDocs.reduce((acc, doc) => ([
-    //     ...acc,
-    //     {
-    //       [doc.id]: targetArray.reduce((acc, word) => invertedIndex[word]?.includes(doc.id) ? acc + 1 : acc, 0),
-    //     },
-    //   ]), []);
-    //   console.log(docOccurrencesNumbers);
-    //   // const docOccurrencesNumbersArray = docOccurrencesNumbers.reduce((acc, doc) => [doc], [])
-    //   return docOccurrencesNumbers
-    //     .filter((doc) => Object.values(doc)[0] > 0)
-    //     .sort((a, b) => Object.values(b)[0] - Object.values(a)[0])
-    //     .map((doc) => Object.keys(doc)[0]);
-    // },
     search(target) {
-      const normalizedTarget = getRidOfSymbols(target);
+      const normalizedTarget = getRidOfSymbols(target.toLowerCase());
       const normalizedTargetArray = normalizedTarget.match(WORD_REGEXP);
 
       const TFs = normalizedTargetArray.reduce((acc, targetWord) => {
@@ -107,11 +76,11 @@ const buildSearchEngine = (docs) => {
 
 };
 
-// const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
-// const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
-// const doc3 = { id: 'doc3', text: "I'm your shooter." };
-// const docs = [doc1, doc2, doc3];
-// const searchEngine = buildSearchEngine(docs);
-// console.log(searchEngine.search('shoot at me'));
+const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
+const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
+const doc3 = { id: 'doc3', text: "I'm your shooter." };
+const docs = [doc1, doc2, doc3];
+const searchEngine = buildSearchEngine(docs);
+console.log(searchEngine.search('shoot at me'));
 
 export default buildSearchEngine;
