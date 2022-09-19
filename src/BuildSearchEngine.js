@@ -32,7 +32,7 @@ const buildSearchEngine = (docs) => {
       const normalizedTargetArray = normalizedTarget.match(WORD_REGEXP);
 
       const TFs = normalizedTargetArray.reduce((acc, targetWord) => {
-        const regExp = new RegExp(`(?<![a-zA-Z])${targetWord}(?![a-zA-Z])`, 'g');
+        const regExp = new RegExp(`${targetWord}`, 'g');
         return {
           ...acc,
           [targetWord]: normalizedDocs
