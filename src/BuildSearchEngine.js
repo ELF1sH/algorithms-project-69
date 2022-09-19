@@ -43,16 +43,20 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10((doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10(1 + (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
         }
       }, {});
       console.log(TFs);
 
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
+        let currentIDF = Math.log10(
+          docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0));
+        if (!isFinite(currentIDF)) {
+          currentIDF = 0;
+        }
         return {
           ...acc,
-          [targetWord]: Math.log10(
-            docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0) + 1)
+          [targetWord]: currentIDF,
         }
       }, {});
       console.log(IDF);
@@ -74,7 +78,7 @@ const buildSearchEngine = (docs) => {
       }, []);
       console.log(res);
       const res1 = res
-        // .filter((item) => item[1] > 0)
+        .filter((item) => item[1] > 0)
         .sort((a, b) => b[1] - a[1])
         .map((item) => item[0])
       console.log(res1);
@@ -84,11 +88,11 @@ const buildSearchEngine = (docs) => {
 
 };
 
-const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
-const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
-const doc3 = { id: 'doc3', text: "I'm your shooter." };
-const docs = [doc1, doc2, doc3];
-const searchEngine = buildSearchEngine(docs);
-console.log(searchEngine.search('shoot at me'));
+// const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
+// const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
+// const doc3 = { id: 'doc3', text: "I'm your shooter." };
+// const docs = [doc1, doc2, doc3];
+// const searchEngine = buildSearchEngine(docs);
+// console.log(searchEngine.search('shoot at me, nerd'));
 
 export default buildSearchEngine;
