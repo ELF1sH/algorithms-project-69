@@ -2,7 +2,8 @@ const WORD_REGEXP = /[a-zA-Z]+/g;
 const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z ]+/g;
 
 const getRidOfSymbols = (text) => {
-  return text.replace(EXTRA_SYMBOLS_REGEXP, '');
+  const text1 = text.replace(/\n/g, ' ');
+  return text1.replace(EXTRA_SYMBOLS_REGEXP, '');
 };
 
 const getUnique = (array) => Array.from(new Set(array));
@@ -43,7 +44,7 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10(1 + (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length} ], []),
         }
       }, {});
       console.log(TFs);
