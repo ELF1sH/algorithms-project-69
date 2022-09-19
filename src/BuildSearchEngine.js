@@ -43,26 +43,19 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => {
-              let currentTF = Math.log10((doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length);
-              if (!isFinite(currentTF)) {
-                currentTF = 0;
-              }
-              return [...acc, { [doc.id]: currentTF} ]
-            }, []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10(1 + (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
         }
       }, {});
       console.log(TFs);
 
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
-        let currentIDF = Math.log10(
-          docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0) + 1);
+        let currentIDF = docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0);
         if (!isFinite(currentIDF)) {
           currentIDF = 0;
         }
         return {
           ...acc,
-          [targetWord]: currentIDF,
+          [targetWord]: currentIDF
         }
       }, {});
       console.log(IDF);
@@ -84,9 +77,8 @@ const buildSearchEngine = (docs) => {
       }, []);
       console.log(res);
       const res1 = res
-        .map((item) => [...item, item[1] = Math.abs(item[1])])
-        .filter((item) => item[1] < 0)
-        .sort((a, b) => a[1] - b[1])
+        .filter((item) => item[1] > 0)
+        .sort((a, b) => b[1] - a[1])
         .map((item) => item[0])
       console.log(res1);
       return res1;
@@ -95,11 +87,11 @@ const buildSearchEngine = (docs) => {
 
 };
 
-const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
-const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
-const doc3 = { id: 'doc3', text: "I'm your shooter." };
-const docs = [doc1, doc2, doc3];
-const searchEngine = buildSearchEngine(docs);
-console.log(searchEngine.search('shoot at me, nerd'));
+// const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
+// const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
+// const doc3 = { id: 'doc3', text: "I'm your shooter." };
+// const docs = [doc1, doc2, doc3];
+// const searchEngine = buildSearchEngine(docs);
+// console.log(searchEngine.search('shoot at me, nerd'));
 
 export default buildSearchEngine;
