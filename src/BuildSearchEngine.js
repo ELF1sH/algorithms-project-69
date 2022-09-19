@@ -43,7 +43,7 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10(1 + (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length} ], []),
         }
       }, {});
       console.log(TFs);
@@ -87,11 +87,11 @@ const buildSearchEngine = (docs) => {
 
 };
 
-// const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
-// const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
-// const doc3 = { id: 'doc3', text: "I'm your shooter." };
-// const docs = [doc1, doc2, doc3];
-// const searchEngine = buildSearchEngine(docs);
-// console.log(searchEngine.search('shoot at me, nerd'));
+const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
+const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
+const doc3 = { id: 'doc3', text: "I'm your shooter." };
+const docs = [doc1, doc2, doc3];
+const searchEngine = buildSearchEngine(docs);
+console.log(searchEngine.search('shoot at me, nerd'));
 
 export default buildSearchEngine;
