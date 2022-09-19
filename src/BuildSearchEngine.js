@@ -101,9 +101,9 @@ const buildSearchEngine = (docs) => {
       ), []);
 
       return res
-        .filter((item) => item[1] > 0)  // sum bigger than 0
-        .sort((a, b) => b[1] - a[1])  // sort by desc
-        .map((item) => item[0]);  // get rid of sums leaving only IDs
+        .filter((item) => item[1] > 0) // sum bigger than 0
+        .sort((a, b) => b[1] - a[1]) // sort by desc
+        .map((item) => item[0]); // get rid of sums leaving only IDs
     },
   };
 };
