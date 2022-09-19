@@ -23,16 +23,16 @@ const getInvertedIndex = (docs) => {
 }
 
 const buildSearchEngine = (docs) => {
-  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text.toLowerCase()) }));
+  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text) }));
   const invertedIndex = getInvertedIndex(normalizedDocs);
   console.log(invertedIndex);
   return {
     search(target) {
-      const normalizedTarget = getRidOfSymbols(target.toLowerCase());
+      const normalizedTarget = getRidOfSymbols(target);
       const normalizedTargetArray = normalizedTarget.match(WORD_REGEXP);
 
       const TFs = normalizedTargetArray.reduce((acc, targetWord) => {
-        const regExp = new RegExp(`${targetWord}`, 'g');
+        const regExp = new RegExp(`(?<![a-zA-Z])${targetWord}(?![a-zA-Z])`, 'g');
         return {
           ...acc,
           [targetWord]: normalizedDocs
