@@ -49,14 +49,10 @@ const buildSearchEngine = (docs) => {
       console.log(TFs);
 
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
-        let currentIDF = Math.log10(
-          docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0));
-        if (!isFinite(currentIDF)) {
-          currentIDF = 0;
-        }
         return {
           ...acc,
-          [targetWord]: currentIDF,
+          [targetWord]: Math.log10(
+            docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0) + 1)
         }
       }, {});
       console.log(IDF);
@@ -88,11 +84,11 @@ const buildSearchEngine = (docs) => {
 
 };
 
-// const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
-// const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
-// const doc3 = { id: 'doc3', text: "I'm your shooter." };
-// const docs = [doc1, doc2, doc3];
-// const searchEngine = buildSearchEngine(docs);
-// console.log(searchEngine.search('shoot at me, nerd'));
+const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
+const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
+const doc3 = { id: 'doc3', text: "I'm your shooter." };
+const docs = [doc1, doc2, doc3];
+const searchEngine = buildSearchEngine(docs);
+console.log(searchEngine.search('shoot at me'));
 
 export default buildSearchEngine;
