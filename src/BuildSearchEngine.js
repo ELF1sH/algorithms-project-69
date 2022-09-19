@@ -3,7 +3,7 @@ const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z0-9 ]+/g;
 
 const getRidOfSymbols = (text) => {
   const text1 = text.replace(/\n/g, ' ');
-  return text1.replace(EXTRA_SYMBOLS_REGEXP, '').toLowerCase();
+  return text1.replace(EXTRA_SYMBOLS_REGEXP, '');
 };
 
 const getUnique = (array) => Array.from(new Set(array));
@@ -14,20 +14,19 @@ const getInvertedIndex = (docs) => {
   const uniqueWords = getUnique(allWords);
 
   const docsTextArrays = docs.map((doc) => ({ ...doc, text: doc.text.match(WORD_REGEXP) }));
-  console.log(docsTextArrays);
 
-  const res = uniqueWords.reduce((acc, word) => ({
+  return uniqueWords.reduce((acc, word) => ({
     ...acc,
     [word]: docsTextArrays.reduce((acc, doc) => doc.text.includes(word) ? [...acc, doc.id] : acc, []),
   }), {});
-
-  return res;
 }
 
+// ------------------------
+// buildSearchEngine
+// ------------------------
 const buildSearchEngine = (docs) => {
-  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text) }));
+  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text.toLowerCase()) }));
   const invertedIndex = getInvertedIndex(normalizedDocs);
-  console.log(invertedIndex);
   return {
     search(target) {
       if (!target) {
@@ -47,7 +46,6 @@ const buildSearchEngine = (docs) => {
             .reduce((acc, doc) => [...acc, { [doc.id]: (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length} ], []),
         }
       }, {});
-      console.log(TFs);
 
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
         let currentIDF = docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0);
@@ -59,7 +57,6 @@ const buildSearchEngine = (docs) => {
           [targetWord]: Math.log(1 + currentIDF),
         }
       }, {});
-      console.log(IDF);
 
       const TFIDF = normalizedTargetArray.reduce((acc, targetWord) => {
         return {
@@ -68,31 +65,20 @@ const buildSearchEngine = (docs) => {
         }
       }, {});
 
-      console.log(TFIDF);
-
       const res = normalizedDocs.reduce((acc, doc) => {
         return [
           ...acc,
           [doc.id, Object.values(TFIDF).reduce((acc, targetWord) => acc + targetWord.find(value => Object.keys(value)[0] === doc.id)[doc.id], 0)],
         ]
       }, []);
-      console.log(res);
-      const res1 = res
+
+      return res
         .filter((item) => item[1] > 0)
         .sort((a, b) => b[1] - a[1])
         .map((item) => item[0])
-      console.log(res1);
-      return res1;
     },
   };
 
 };
-
-const doc1 = { id: 'doc1', text: "I can't shoot straight unless I've had a pint!" };
-const doc2 = { id: 'doc2', text: "Don't shoot shoot shoot that thing at me." };
-const doc3 = { id: 'doc3', text: "I'm your shooter." };
-const docs = [doc1, doc2, doc3];
-const searchEngine = buildSearchEngine(docs);
-console.log(searchEngine.search('shoot at me, nerd'));
 
 export default buildSearchEngine;
