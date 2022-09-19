@@ -43,7 +43,7 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10(1 + (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
         }
       }, {});
       console.log(TFs);
@@ -51,11 +51,11 @@ const buildSearchEngine = (docs) => {
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
         let currentIDF = docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0);
         if (!isFinite(currentIDF)) {
-          currentIDF = 1;
+          currentIDF = 0;
         }
         return {
           ...acc,
-          [targetWord]: Math.log10(currentIDF)
+          [targetWord]: Math.log10(1 + currentIDF),
         }
       }, {});
       console.log(IDF);
