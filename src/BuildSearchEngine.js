@@ -1,9 +1,9 @@
-const WORD_REGEXP = /[a-zA-Z]+/g;
-const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z ]+/g;
+const WORD_REGEXP = /([a-zA-Z]+)|([0-9]+)/g;
+const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z0-9 ]+/g;
 
 const getRidOfSymbols = (text) => {
   const text1 = text.replace(/\n/g, ' ');
-  return text1.replace(EXTRA_SYMBOLS_REGEXP, '');
+  return text1.replace(EXTRA_SYMBOLS_REGEXP, '').toLowerCase();
 };
 
 const getUnique = (array) => Array.from(new Set(array));
