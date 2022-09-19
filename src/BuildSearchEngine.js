@@ -51,11 +51,11 @@ const buildSearchEngine = (docs) => {
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
         let currentIDF = docs.length / (invertedIndex[targetWord] ? invertedIndex[targetWord].length : 0);
         if (!isFinite(currentIDF)) {
-          currentIDF = 0;
+          currentIDF = 1;
         }
         return {
           ...acc,
-          [targetWord]: currentIDF
+          [targetWord]: Math.log10(currentIDF)
         }
       }, {});
       console.log(IDF);
