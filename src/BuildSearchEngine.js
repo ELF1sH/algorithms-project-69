@@ -29,9 +29,6 @@ const buildSearchEngine = (docs) => {
   console.log(invertedIndex);
   return {
     search(target) {
-      console.log('-------------------');
-      console.log(target);
-      console.log('-------------------');
       if (!target) {
         return [];
       }
@@ -56,7 +53,7 @@ const buildSearchEngine = (docs) => {
         console.log(invertedIndex[targetWord].length)
         return {
           ...acc,
-          [targetWord]: Math.log10(docs.length / invertedIndex[targetWord].length + 1)
+          [targetWord]: Math.log10(docs.length / (invertedIndex[targetWord].length || 0) + 1)
         }
       }, {});
       console.log(IDF);
