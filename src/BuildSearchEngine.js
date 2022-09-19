@@ -42,6 +42,8 @@ const buildSearchEngine = (docs) => {
       console.log(TFs);
 
       const IDF = normalizedTargetArray.reduce((acc, targetWord) => {
+        console.log(docs.length);
+        console.log(invertedIndex[targetWord].length)
         return {
           ...acc,
           [targetWord]: Math.log10(docs.length / invertedIndex[targetWord].length)
