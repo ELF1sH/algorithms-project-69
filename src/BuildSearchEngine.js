@@ -46,7 +46,7 @@ const buildSearchEngine = (docs) => {
         console.log(invertedIndex[targetWord].length)
         return {
           ...acc,
-          [targetWord]: Math.log10(docs.length / invertedIndex[targetWord].length + 1)
+          [targetWord]: Math.log10(docs.length / invertedIndex[targetWord].length)
         }
       }, {});
       console.log(IDF);
