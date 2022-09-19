@@ -13,6 +13,7 @@ const getInvertedIndex = (docs) => {
   const uniqueWords = getUnique(allWords);
 
   const docsTextArrays = docs.map((doc) => ({ ...doc, text: doc.text.match(WORD_REGEXP) }));
+  console.log(docsTextArrays);
 
   const res = uniqueWords.reduce((acc, word) => ({
     ...acc,
@@ -36,7 +37,7 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10((doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
         }
       }, {});
       console.log(TFs);
