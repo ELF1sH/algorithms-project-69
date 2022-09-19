@@ -37,7 +37,7 @@ const buildSearchEngine = (docs) => {
         return {
           ...acc,
           [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10((doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length + 1)} ], []),
+            .reduce((acc, doc) => [...acc, { [doc.id]: Math.log10((doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length)} ], []),
         }
       }, {});
       console.log(TFs);
