@@ -1,6 +1,9 @@
 const WORD_REGEXP = /([a-zA-Z]+)|([0-9]+)/g;
 const EXTRA_SYMBOLS_REGEXP = /[^a-zA-Z0-9 ]+/g;
 
+// ------------------------
+// functions-helpers block *BEGINNING*
+// ------------------------
 const getRidOfSymbols = (text) => {
   const text1 = text.replace(/\n/g, ' ');
   return text1.replace(EXTRA_SYMBOLS_REGEXP, '');
@@ -9,41 +12,53 @@ const getRidOfSymbols = (text) => {
 const getUnique = (array) => Array.from(new Set(array));
 
 const getInvertedIndex = (docs) => {
-  const unitedText = docs.reduce((acc, doc) => `${acc} ${doc.text}`, "");
-  const allWords = unitedText.match(WORD_REGEXP);
-  const uniqueWords = getUnique(allWords);
+  const unitedText = docs.reduce((acc, doc) => `${acc} ${doc.text}`, '');
+  const allWordsArray = unitedText.match(WORD_REGEXP);
+  const uniqueWordsArray = getUnique(allWordsArray);
 
   const docsTextArrays = docs.map((doc) => ({ ...doc, text: doc.text.match(WORD_REGEXP) }));
 
-  return uniqueWords.reduce((acc, word) => ({
+  return uniqueWordsArray.reduce((acc, word) => ({
     ...acc,
-    [word]: docsTextArrays.reduce((acc, doc) => doc.text.includes(word) ? [...acc, doc.id] : acc, []),
+    [word]: docsTextArrays.reduce((acc, doc) => (
+      doc.text.includes(word) ? [...acc, doc.id] : acc
+    ), []),
   }), {});
 }
+
+const getTF = (docText, targetWordRegExp) => {
+  const targetWordsInText = (docText.match(targetWordRegExp) || []).length;
+  const wordsInText = docText.match(WORD_REGEXP).length;
+  return targetWordsInText / wordsInText;
+}
+
+// ------------------------
+// functions-helpers block *ENDING*
+// ------------------------
 
 // ------------------------
 // buildSearchEngine
 // ------------------------
 const buildSearchEngine = (docs) => {
-  const normalizedDocs = docs.map((doc) => ({ ...doc, text: getRidOfSymbols(doc.text.toLowerCase()) }));
+  const normalizedDocs = docs.map((doc) => ({
+    ...doc,
+    text: getRidOfSymbols(doc.text.toLowerCase()),
+  }));
   const invertedIndex = getInvertedIndex(normalizedDocs);
+
   return {
     search(target) {
       if (!target) {
         return [];
       }
       const normalizedTarget = getRidOfSymbols(target);
-      if (normalizedTarget === null) {
-        return [];
-      }
       const normalizedTargetArray = normalizedTarget.match(WORD_REGEXP);
 
       const TFs = normalizedTargetArray.reduce((acc, targetWord) => {
         const regExp = new RegExp(`(?<![a-zA-Z])${targetWord}(?![a-zA-Z])`, 'g');
         return {
           ...acc,
-          [targetWord]: normalizedDocs
-            .reduce((acc, doc) => [...acc, { [doc.id]: (doc.text.match(regExp) || []).length / doc.text.match(WORD_REGEXP).length} ], []),
+          [targetWord]: normalizedDocs.reduce((acc, doc) => [...acc, { [doc.id]: getTF(doc.text, regExp) }], []),
         }
       }, {});
 
