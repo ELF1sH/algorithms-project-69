@@ -29,6 +29,12 @@ const buildSearchEngine = (docs) => {
   console.log(invertedIndex);
   return {
     search(target) {
+      console.log('-------------------');
+      console.log(target);
+      console.log('-------------------');
+      if (!target) {
+        return [];
+      }
       const normalizedTarget = getRidOfSymbols(target);
       if (normalizedTarget === null) {
         return [];
